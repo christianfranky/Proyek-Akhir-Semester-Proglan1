@@ -1,0 +1,466 @@
+/*
+Program Menentukan Rangking Mahasiswa
+
+Christian Franky Siburian - 2106731434
+Eldisja Hadasa - 2106640133
+Naufal Febriyanto - 2106702674
+
+*/
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <windows.h>
+
+struct node{
+	int nilai;
+	char nama[100];
+	char npm[10];
+	struct node *left, *right;
+};
+
+struct node *newNode(char nama[], char npm[], int item) {
+ 	struct node *temp = (struct node *)malloc(sizeof(struct node));
+  	temp->nilai = item;
+  	strcpy(temp->nama, nama);
+  	strcpy(temp->npm, npm);
+  	temp->left = temp->right = NULL;
+ 	return temp;
+}//bener
+
+struct node *insert(struct node *node, char nama[], char npm[], int key) {
+	if (node == NULL) 
+	return newNode(nama, npm, key);
+	
+	if (key <= node->nilai)//kurang dari sama dengan
+		node->left = insert(node->left, nama, npm, key);
+	else
+	    node->right = insert(node->right, nama, npm, key);
+	
+	return node;
+}//bener
+
+void printlist(struct node root, int i){
+	printf("\n%2d \t\t%s \t\t%s  \t%d", i+1, root.nama, root.npm, root.nilai);
+}
+
+int inorder(struct node *root, int i) {
+	if(root != NULL){
+		struct node temp;
+		if(root->right != NULL){
+		i = inorder(root->right, i);
+		}
+		strcpy(temp.nama, root->nama);
+		strcpy(temp.npm, root->npm);
+		temp.nilai = root->nilai;
+		printlist(temp, i);
+		i++;
+		if(root->left != NULL){
+		i = inorder(root->left, i);
+		}
+	}
+	return i;
+}//bener
+
+struct node *minValueNode(struct node *node) {
+	struct node *current = node;
+	
+	
+	while (current && current->left != NULL)
+		current = current->left;
+	
+	return current;
+}//bener
+
+struct node *deleteNode(struct node *root, int key) {
+	if(root == NULL){
+		return root;
+	}
+	if (key < root->nilai)
+	    root->left = deleteNode(root->left, key);
+	else if (key > root->nilai)
+	    root->right = deleteNode(root->right, key);
+	
+	else {
+    	if (root->left == NULL) {
+	    	struct node *temp = root->right;
+	    	free(root);
+	   		return temp;
+		} 
+		else if (root->right == NULL) {
+	    	struct node *temp = root->left;
+	    	free(root);
+	    	return temp;
+    	}
+
+    	struct node *temp = minValueNode(root->right);
+    	
+   		root->nilai = temp->nilai;
+   		strcpy(root->nama, temp->nama);
+   		strcpy(root->npm, temp->npm);
+		root->right = deleteNode(root->right, temp->nilai);
+	}
+	return root;
+}
+
+int searchNama(struct node *root, char search[], int *error, int i){
+	system("cls");
+	char temp1[100], temp2[100];
+	if (root != NULL) {
+		if(root->right != NULL){
+		i = searchNama(root->right, search, error, i);
+		}
+		
+		if(strstr(root->nama, search) != NULL){
+		printf("\nData yang dicari memiliki nama %s dengan NPM %s dengan rangking %d\n\n", root->nama, root->npm, i + 1);
+		*error = 2;
+		}
+		i++;
+		if(root->left != NULL){
+		i = searchNama(root->left, search, error, i);
+		}
+	}
+	return i;
+}
+
+int searchNPM(struct node *root, char search[], int *error, int i){
+	system("cls");
+	if (root != NULL) {
+		if(root->right != NULL){
+		i = searchNama(root->right, search, error, i);
+		}
+		
+		if(strstr(root->npm, search) != NULL){
+		printf("\nData yang dicari memiliki nama %s dengan NPM %s dengan rangking %d\n\n", root->nama, root->npm, i + 1);
+		*error = 2;
+		}
+		i++;
+		if(root->left != NULL){
+		i = searchNama(root->left, search, error, i);
+		}
+	}
+	return i;
+}
+
+int deleteNama(struct node *root, char search[]){
+	int nilai;
+	char temp1[100], temp2[100];
+	if (root != NULL) {
+		if(root->left != NULL){
+			nilai = deleteNama(root->left, search);
+		}
+	
+		if(strstr(root->nama, search) != NULL){
+			nilai = root->nilai;
+			return nilai;
+		}
+		if(root->right != NULL){
+			nilai = deleteNama(root->right, search);
+		}
+	}
+	return nilai;
+}
+
+int deleteNPM(struct node *root, char search[]){
+	int nilai;
+	if (root != NULL) {
+		if(root->left != NULL){
+			nilai = deleteNPM(root->left, search);
+		}
+		if(strstr(root->npm, search) != NULL){
+			nilai = root->nilai;
+			return nilai;
+		}
+		if(root->right != NULL){
+			nilai = deleteNPM(root->right, search);
+		}
+	}
+	return nilai;
+}
+
+void printData(struct node *root){
+	int i = 0;
+	
+	system("cls"); 
+	printf("===============================================================================================\n");
+	printf(" 	\t\t      MENU TAMPILAN DATA  \n");
+	printf("   \t\t  PROGRAM MENENTUKAN RANGKING MAHASISWA\n");
+	printf("===============================================================================================\n");
+	printf("\nRanking\t\tNama\t\t\tNPM\t\tNilai");
+	printf("\n-------------------------------------------------------------------------------------------");
+	
+	inorder(root, i);
+	printf("\n-------------------------------------------------------------------------------------------\n\n");
+	system("pause");
+
+}
+
+void searchData(struct node *root){
+	int i = 0, menu, error = 1;
+	char searchnama[100], searchnpm[10];
+	system("cls");
+	printf("================================================================================================\n");
+	printf(" 	     \t\t MENU PENCARIAN  \n");
+	printf("     \t\tPROGRAM MENENTUKAN RANGKING MAHASISWA\n");
+	printf("================================================================================================\n\n");
+	printf("Pilihan Menu: \n");
+	printf("1. Cari dengan input nama\n");
+	printf("2. Cari dengan input NPM\n");
+	printf("3. Kembali ke menu?\n");
+	printf("Menu Pilihan Anda: ");
+	scanf("%d", &menu);
+
+	switch(menu){
+		case 1:
+			//linear search
+			system("cls");
+			printf("Input nama (case sensitive): ");
+			scanf(" %[^\n]", &searchnama);
+			searchNama(root, searchnama, &error, i);
+			if (error != 2){
+				printf("Data mahasiswa tidak ditemukan\n");
+			}
+			system("pause");
+			break;
+		case 2: 
+			//linear search
+			system("cls");
+			printf("Input npm: ");
+			scanf(" %s", &searchnpm);
+			searchNPM(root, searchnpm, &error, i);
+			if (error != 2){
+				printf("Data mahasiswa tidak ditemukan\n");
+			}
+			system("pause");
+			break;
+		case 3 :
+			return;
+			break;
+		default:
+			printf("Invalid input\n\n");
+			system("pause");
+			break;
+	}
+}
+
+void exitProgram(void){
+	printf("================================================\n");
+ 	printf("   Terima Kasih Telah Menggunakan Program Ini\n");
+ 	printf("================================================\n");
+	system("pause");
+ 	system("cls"); 
+ 	exit(EXIT_SUCCESS);
+}
+
+
+void panduan();
+int  panduanouput(int x);
+
+
+
+int main(){
+	int menu = 0, pilihan = 0, sentinelMenu = 0, n;
+	int nilai;
+	char nama[100];
+	char npm[10];
+	struct node *root = NULL;
+	
+	do {
+		system("cls"); 
+		printf("======================================================\n");
+		printf(" 	         SELAMAT DATANG  \n");
+		printf("    PROGRAM MENENTUKAN RANGKING MAHASISWA\n");
+		printf("======================================================\n\n");
+		printf("1. Menu Input Data\n");
+		printf("2. Menu Delete Data\n");
+		printf("3. Menu Tampilan Data\n");
+		printf("4. Menu Pencarian\n");
+		printf("5. Menu Panduan\n");
+		printf("6. Keluar\n");
+		printf("Masukkan nomor menu yang anda inginkan: ");
+		scanf("%d", &pilihan);
+		switch(pilihan){
+			case 1:
+				system("cls"); 
+				printf("================================================\n");
+				printf(" 	      MENU INPUT DATA  \n");
+				printf("     PROGRAM MENENTUKAN RANGKING MAHASISWA\n");
+				printf("================================================\n\n");
+				printf("\nMasukkan data :\n");
+				
+				printf("nama : ");
+        		scanf(" %[^\n]", nama);
+        
+        		printf("npm : ");
+       			scanf("%s", &npm);
+        
+        		printf("nilai : ");
+        		scanf("%d", &nilai);
+        
+        		printf("\n");
+				
+				root = insert(root, nama, npm, nilai);
+				break;
+			case 2:
+				system("cls");
+				if (root == NULL){
+					printf("Tidak ada data yang disimpan\n");
+					system("pause");
+					break;
+				}
+				printf("================================================\n");
+				printf(" 	      MENU DELETE DATA  \n");
+				printf("     PROGRAM MENENTUKAN RANGKING MAHASISWA\n");
+				printf("================================================\n\n");
+				printf("Pilihan Menu: \n");
+				printf("1. Delete dengan input nama\n");
+				printf("2. Delete dengan input NPM\n");
+				printf("3. Kembali ke menu?\n");
+				printf("Menu Pilihan Anda: ");
+				scanf("%d", &menu);
+			
+				switch(menu){
+					case 1:
+						//linear search
+						system("cls");
+						printf("Input nama (case sensitive): ");
+						scanf(" %[^\n]", &nama);
+						nilai = deleteNama(root, nama);
+						root = deleteNode(root, nilai);
+						system("pause");
+						break;
+					case 2: 
+						//linear search
+						system("cls");
+						printf("Input npm: ");
+						scanf(" %s", &npm);
+						nilai = deleteNPM(root, npm);
+						root = deleteNode(root, nilai);
+						system("pause");
+						break;
+					case 3 :
+						break;
+					default:
+						printf("Invalid input\n\n");
+						system("pause");
+						break;
+				}
+				break;
+			case 3:
+				system("cls"); 
+				if (root == NULL){
+					printf("Tidak ada data yang disimpan\n");
+					system("pause");
+					break;
+				}
+				printData(root);
+				break;
+			case 4:
+				system("cls"); 
+				if (root == NULL){
+					printf("Tidak ada data yang disimpan\n");
+					system("pause");
+					break;
+				}
+				searchData(root);
+				break;				
+			case 5:
+				system("cls"); 
+				panduan();
+				break;
+			case 6:
+				system("cls"); 
+				exitProgram();
+				
+				free(root);
+				
+				return 0;
+			default:
+				printf("\nPilihan tidak ditemukan\n\n");
+				system("pause");
+				break;
+				
+		}
+	}while(sentinelMenu != 1);
+}
+
+void panduan(){
+	int input, menu;
+	
+	system("cls");
+	printf("================================================\n");
+	printf(" 	      MENU PANDUAN  \n");
+	printf("     PROGRAM MENENTUKAN RANGKING MAHASISWA\n");
+	printf("================================================\n\n");
+	printf("1. Panduan input data mahasiswa\n");
+	printf("2. Panduan mencari data mahasiswa\n");
+	printf("3. Panduan menghapus data mahasiswa\n");
+	printf("4. Kembali ke menu?\n");
+	printf("Menu Pilihan Anda: ");
+	scanf("%d", &input);
+	
+	menu =  panduanouput(input);
+	
+	if(menu == 1){
+		panduan();
+	}
+}
+
+int panduanouput(int x){
+	int kembali;
+	
+		switch (x){
+			case 1: 
+				system("cls");
+				printf("===========================================================================================\n");
+				printf("              \t  Panduan Memasukkan Data Mahasiswa\n");
+				printf("===========================================================================================\n\n");
+				printf("1. Masukkan nama mahasiswa\n");
+				printf("2. Masukkan Nomor Pokok Mahasiswa\n");
+				printf("3. Masukkan nilai mahasiswa\n");
+				printf("Input 1 apabila ingin kembali ke panduan : ");
+				scanf("%d", &kembali);
+				return kembali;
+				system("pause");
+				break;
+			case 2:
+				system("cls");
+				printf("========================================================================================\n");
+				printf("                \tPanduan Pencarian Data Mahasiswa\n");
+				printf("========================================================================================\n\n");
+				printf("Catatan: key search setiap hurufnya harus sama persis dengan data yang telah di-input\n");
+				printf("         (huruf kapital atau tidak)\n");
+				printf("1. Pilih ingin mencari dengan input nama atau NPM\n");
+				printf("2. Masukkan key search mahasiswa yang dicari datanya\n");
+				printf("\tCatatan: untuk menu cari dengan input nama key search berupa nama mahasiswa\n");
+				printf("\tCatatan: untuk menu cari dengan input NPM key search berupa NPM mahasiswa\n");
+				printf("Input 1 apabila ingin kembali ke panduan : ");
+				scanf("%d", &kembali);
+				return kembali;
+				system("pause");
+				break;
+			case 3: 
+				system("cls");
+				printf("========================================================================================\n");
+				printf("                \tPanduan Delete Data Mahasiswa\n");
+				printf("========================================================================================\n\n");
+				printf("Catatan: key search setiap hurufnya harus sama persis dengan data yang telah di-input\n");
+				printf("         (huruf kapital atau tidak)\n");
+				printf("1. Pilih ingin menghapus dengan input nama atau NPM\n");
+				printf("2. Masukkan key delete mahasiswa yang akan dihapus datanya\n");
+				printf("\tCatatan: untuk menu delete dengan input nama key delete berupa nama mahasiswa\n");
+				printf("\tCatatan: untuk menu delete dengan input NPM key delete berupa NPM mahasiswa\n");
+				printf("Input 1 apabila ingin kembali ke panduan : ");
+				scanf("%d", &kembali);
+				return kembali;
+				system("pause");
+				break;
+			case 4:
+				return 0;
+				break;
+			default:
+				printf("Invalid input\n\n");
+				system("pause");
+				panduan();
+				break;
+			}
+}
