@@ -103,7 +103,6 @@ struct node *deleteNode(struct node *root, int key) {
 
 int searchNama(struct node *root, char search[], int *error, int i){
 	system("cls");
-	char temp1[100], temp2[100];
 	if (root != NULL) {
 		if(root->right != NULL){
 		i = searchNama(root->right, search, error, i);
@@ -142,7 +141,6 @@ int searchNPM(struct node *root, char search[], int *error, int i){
 
 int deleteNama(struct node *root, char search[]){
 	int nilai;
-	char temp1[100], temp2[100];
 	if (root != NULL) {
 		if(root->left != NULL){
 			nilai = deleteNama(root->left, search);
