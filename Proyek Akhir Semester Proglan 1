@@ -31,7 +31,7 @@ struct node *insert(struct node *node, char nama[], char npm[], int key) {
 	if (node == NULL) 
 	return newNode(nama, npm, key);
 	
-	if (key <= node->nilai)//kurang dari sama dengan
+	if (key <= node->nilai)
 		node->left = insert(node->left, nama, npm, key);
 	else
 	    node->right = insert(node->right, nama, npm, key);
