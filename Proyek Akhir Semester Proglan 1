@@ -25,7 +25,7 @@ struct node *newNode(char nama[], char npm[], int item) {
   	strcpy(temp->npm, npm);
   	temp->left = temp->right = NULL;
  	return temp;
-}//bener
+}
 
 struct node *insert(struct node *node, char nama[], char npm[], int key) {
 	if (node == NULL) 
@@ -37,7 +37,7 @@ struct node *insert(struct node *node, char nama[], char npm[], int key) {
 	    node->right = insert(node->right, nama, npm, key);
 	
 	return node;
-}//bener
+}
 
 void printlist(struct node root, int i){
 	printf("\n%2d \t\t%s \t\t%s  \t%d", i+1, root.nama, root.npm, root.nilai);
@@ -59,7 +59,7 @@ int inorder(struct node *root, int i) {
 		}
 	}
 	return i;
-}//bener
+}
 
 struct node *minValueNode(struct node *node) {
 	struct node *current = node;
@@ -69,7 +69,7 @@ struct node *minValueNode(struct node *node) {
 		current = current->left;
 	
 	return current;
-}//bener
+}
 
 struct node *deleteNode(struct node *root, int key) {
 	if(root == NULL){
@@ -211,7 +211,6 @@ void searchData(struct node *root){
 
 	switch(menu){
 		case 1:
-			//linear search
 			system("cls");
 			printf("Input nama (case sensitive): ");
 			scanf(" %[^\n]", &searchnama);
@@ -222,7 +221,6 @@ void searchData(struct node *root){
 			system("pause");
 			break;
 		case 2: 
-			//linear search
 			system("cls");
 			printf("Input npm: ");
 			scanf(" %s", &searchnpm);
@@ -320,7 +318,6 @@ int main(){
 			
 				switch(menu){
 					case 1:
-						//linear search
 						system("cls");
 						printf("Input nama (case sensitive): ");
 						scanf(" %[^\n]", &nama);
@@ -329,7 +326,6 @@ int main(){
 						system("pause");
 						break;
 					case 2: 
-						//linear search
 						system("cls");
 						printf("Input npm: ");
 						scanf(" %s", &npm);
